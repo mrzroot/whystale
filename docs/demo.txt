@@ -1,0 +1,48 @@
+$ whystale --demo
+whystale demo - everything below is real: files in a temp dir and a spawned process.
+
+1. creating a tiny project in /tmp/whystale-demo-da_febxi/shop-web
+2. started its dev server (pid 195089, port 48345); it read .env once, at startup
+   GET / -> API_URL=http://localhost:8000
+3. you edit .env (API_URL ...:9000) and `npm install` rewrites package-lock.json
+   GET / -> API_URL=http://localhost:8000   <- the server still serves the OLD value
+4. whystale shop-web
+
+whystale 0.1.0 · /tmp/whystale-demo-da_febxi/shop-web
+checked 7 files (walk) · 1 process(es) in project (proc)
+
+STALE (4)
+
+✗ process · python3 — `/usr/bin/python3 -u server.py` (pid 195089 :48345)
+    why:    started 17:29:46, but 2 file(s) it reads at startup changed afterwards (latest 4s later)
+    newer:  package-lock.json (lockfile) changed 4s after start
+    newer:  .env (env file) changed 4s after start
+    proof:  process start time vs file modification times
+    note:   no reload behaviour is known for this process, so it most likely read the file(s) once at startup
+    fix:    kill 195089
+            cd /tmp/whystale-demo-da_febxi/shop-web && /usr/bin/python3 -u server.py
+
+✗ deps · node_modules installed state (.package-lock.json) is older than package-lock.json
+    why:    package-lock.json was modified 2h 00m after the last install (15:29:47); 1 package(s) differ, e.g. express locked 4.19.2 / installed 4.18.2
+    newer:  package-lock.json (lockfile) changed 2h 00m after install
+    proof:  file contents + modification times
+    fix:    npm ci
+
+✗ build · dist is older than its sources
+    why:    dist was last written 15:59:47; 1 source file(s) changed after that (newest 1h 00m later)
+    newer:  src/checkout.js (source) changed 1h 00m after build
+    proof:  modification times
+    fix:    npm run build
+
+✗ generated · Prisma client is older than its schema
+    why:    prisma/schema.prisma changed 1h 45m after node_modules/.prisma/client was generated (15:29:47); the schema stored with the generated client differs from the current one
+    newer:  prisma/schema.prisma (schema/source) changed 1h 45m after generation
+    proof:  file contents + modification times
+    fix:    npx prisma generate
+
+note: not a git work tree (or git missing): used a built-in .gitignore approximation to list files
+
+4 stale, 0 maybe. Exit code 3.
+
+(The demo always exits 0 when it works. Real scans exit 3 when something is stale.)
+[exit code: 0]

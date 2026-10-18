@@ -1,0 +1,38 @@
+$ whystale --demo --json   (stdout; the narration goes to stderr)
+{
+  "tool": "whystale",
+  "version": "0.1.0",
+  "stale": true,
+  "summary": {
+    "stale": 4,
+    "maybe": 0,
+    "ignored": 0
+  },
+  "exit_code_if_stale": 3
+}
+{
+  "kind": "artifact",
+  "level": "stale",
+  "key": "artifact:dist",
+  "subject": "dist is older than its sources",
+  "reason": "dist was last written 15:59:26; 1 source file(s) changed after that (newest 1h 00m later)",
+  "evidence": "mtime",
+  "fix": [
+    "npm run build"
+  ],
+  "older_than": [
+    {
+      "path": "src/checkout.js",
+      "what": "source",
+      "changed": "2026-10-18T16:59:26+0330",
+      "seconds_after_build": 3600.0
+    }
+  ],
+  "notes": [],
+  "details": {
+    "output": "dist",
+    "output_written": "2026-10-18T15:59:26+0330",
+    "newer_source_files": 1,
+    "sources_considered": 2
+  }
+}

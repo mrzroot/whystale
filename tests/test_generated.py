@@ -1,0 +1,174 @@
+import os
+
+from whystale.checks_generated import parse_codegen_yaml, prisma_output_dir
+from whystale.config import Config, load_config
+from helpers import ago, kinds, mk, mkjson, scan
+
+SCHEMA = 'generator client {\n  provider = "prisma-client-js"\n}\ndatasource db {\n  provider = "sqlite"\n  url = "file:./d.db"\n}\nmodel U { id Int @id }\n'
+
+
+def prisma(tmp_path, schema_age, client_age, copy=SCHEMA, schema=SCHEMA):
+    mk(tmp_path, "prisma/schema.prisma", schema, ago(schema_age))
+    mk(tmp_path, "node_modules/.prisma/client/index.js", "//", ago(client_age))
+    if copy is not None:
+        mk(tmp_path, "node_modules/.prisma/client/schema.prisma", copy, ago(client_age))
+
+
+def test_prisma_schema_changed_after_generate(tmp_path):
+    prisma(tmp_path, 100, 1000, schema=SCHEMA + "model V { id Int @id }\n")
+    f = scan(tmp_path, only={"generated"}).findings[0]
+    assert (f.kind, f.level, f.evidence) == ("generated", "stale", "content")
+    assert f.fix == ["npx prisma generate"]
+
+
+def test_prisma_touched_but_identical_is_cleared(tmp_path):
+    prisma(tmp_path, 100, 1000)
+    r = scan(tmp_path, only={"generated"})
+    assert r.findings == [] and "identical" in r.ignored[0]["why"]
+
+
+def test_prisma_copy_reformatted_by_prisma_still_counts_as_identical(tmp_path):
+    # real `prisma generate` stores the schema with extra blank lines
+    copy = SCHEMA.replace("}\ndatasource", "}\n\ndatasource").replace("  url =", "  url      =")
+    prisma(tmp_path, 100, 1000, copy=copy)
+    r = scan(tmp_path, only={"generated"})
+    assert r.findings == [] and r.ignored
+
+
+def test_prisma_without_copy_falls_back_to_mtime(tmp_path):
+    prisma(tmp_path, 100, 1000, copy=None)
+    f = scan(tmp_path, only={"generated"}).findings[0]
+    assert f.evidence == "mtime" and f.level == "stale"
+
+
+def test_prisma_fresh_client(tmp_path):
+    prisma(tmp_path, 1000, 100, copy="different but newer")
+    assert scan(tmp_path, only={"generated"}).findings == []
+
+
+def test_prisma_custom_output_and_script(tmp_path):
+    schema = 'generator client {\n provider = "prisma-client-js"\n output = "../src/gen/prisma"\n}\n'
+    assert prisma_output_dir(schema) == "../src/gen/prisma"
+    assert prisma_output_dir(SCHEMA) is None
+    mk(tmp_path, "prisma/schema.prisma", schema, ago(100))
+    mk(tmp_path, "src/gen/prisma/index.js", "//", ago(1000))
+    mk(tmp_path, "node_modules/x/y", "", ago(9000))
+    mkjson(tmp_path, "package.json", {"scripts": {"db:gen": "prisma generate"}}, ago(9000))
+    f = scan(tmp_path, only={"generated"}).findings[0]
+    assert f.fix == ["npm run db:gen"] and f.details["output"] == "src/gen/prisma"
+
+
+def test_prisma_nonstandard_schema_location_gets_schema_flag(tmp_path):
+    mk(tmp_path, "db/schema.prisma", SCHEMA + "model V { id Int @id }\n", ago(100))
+    mk(tmp_path, "node_modules/.prisma/client/index.js", "//", ago(1000))
+    f = scan(tmp_path, only={"generated"}).findings[0]
+    assert f.fix == ["npx prisma generate --schema db/schema.prisma"]
+
+
+def test_protobuf_stale_when_proto_newer(tmp_path):
+    mk(tmp_path, "proto/user.proto", 'syntax = "proto3";', ago(100))
+    mk(tmp_path, "gen/user_pb2.py", "#", ago(1000))
+    mk(tmp_path, "gen/user_pb2_grpc.py", "#", ago(1000))
+    mk(tmp_path, "buf.gen.yaml", "version: v2", ago(9000))
+    f = scan(tmp_path, only={"generated"}).findings[0]
+    assert (f.level, f.fix) == ("stale", ["buf generate"])
+    assert sorted(f.details["stale_outputs"]) == ["gen/user_pb2.py", "gen/user_pb2_grpc.py"]
+
+
+def test_protobuf_partial_regeneration_is_only_maybe(tmp_path):
+    mk(tmp_path, "user.proto", "x", ago(100))
+    mk(tmp_path, "user_pb2.py", "#", ago(1000))
+    mk(tmp_path, "user.pb.go", "//", ago(10))
+    f = scan(tmp_path, only={"generated"}).findings[0]
+    assert f.level == "maybe" and f.notes
+    assert f.fix[0].startswith("#")  # no command could be inferred: says so
+
+
+def test_protobuf_fresh_and_gitignored_outputs(tmp_path):
+    mk(tmp_path, ".gitignore", "gen/\n", ago(9000))
+    mk(tmp_path, "a.proto", "x", ago(1000))
+    mk(tmp_path, "gen/a_pb2.py", "#", ago(100))
+    assert scan(tmp_path, only={"generated"}).findings == []
+    os.utime(tmp_path / "a.proto", (ago(10), ago(10)))  # newer: gitignored output is still found
+    assert kinds(scan(tmp_path, only={"generated"})) == ["generated"]
+
+
+def test_protobuf_duplicate_stem_is_downgraded(tmp_path):
+    mk(tmp_path, "v1/user.proto", "x", ago(100))
+    mk(tmp_path, "v2/user.proto", "x", ago(100))
+    mk(tmp_path, "v1/user_pb2.py", "#", ago(1000))
+    r = scan(tmp_path, only={"generated"})
+    assert r.findings and all(f.level == "maybe" for f in r.findings)
+
+
+def test_openapi_needs_marker_in_generated_dir(tmp_path):
+    mk(tmp_path, "openapi.yaml", "openapi: 3.0.0", ago(100))
+    mk(tmp_path, "src/generated/client.ts", "// unrelated generated thing", ago(1000))
+    assert scan(tmp_path, only={"generated"}).findings == []
+    mk(tmp_path, "src/generated/api.ts", "/* Generated by openapi-typescript */", ago(1000))
+    f = scan(tmp_path, only={"generated"}).findings[0]
+    assert f.level == "stale" and "src/generated" in f.subject
+    mkjson(tmp_path, "package.json", {"scripts": {"gen:api": "openapi-typescript openapi.yaml -o src/generated/api.ts"}}, ago(9000))
+    assert scan(tmp_path, only={"generated"}).findings[0].fix == ["npm run gen:api"]
+
+
+def test_openapi_fresh(tmp_path):
+    mk(tmp_path, "docs/swagger.json", "{}", ago(1000))
+    mk(tmp_path, "generated/api.ts", "swagger-codegen", ago(100))
+    assert scan(tmp_path, only={"generated"}).findings == []
+
+
+CODEGEN = """schema: ./schema.graphql
+documents:
+  - 'src/**/*.graphql'
+  - "!src/skip/**"
+generates:
+  src/gql/:
+    preset: client
+  "src/types.ts":
+    plugins:
+      - typescript
+"""
+
+
+def test_parse_codegen_yaml():
+    spec = parse_codegen_yaml(CODEGEN)
+    assert spec["schema"] == ["./schema.graphql"]
+    assert spec["documents"] == ["src/**/*.graphql", "!src/skip/**"]
+    assert spec["generates"] == ["src/gql/", "src/types.ts"]
+    assert parse_codegen_yaml("schema: http://x/graphql\ngenerates:\n  a.ts:\n    plugins: [x]\n")["generates"] == ["a.ts"]
+
+
+def test_graphql_codegen_outputs(tmp_path):
+    mk(tmp_path, "codegen.yml", CODEGEN, ago(9000))
+    mk(tmp_path, "schema.graphql", "type Q { a: Int }", ago(9000))
+    mk(tmp_path, "src/q.graphql", "query { a }", ago(100))
+    mk(tmp_path, "src/gql/index.ts", "//", ago(1000))
+    mk(tmp_path, "src/types.ts", "//", ago(50))  # up to date
+    r = scan(tmp_path, only={"generated"})
+    assert [f.key for f in r.findings] == ["generated:graphql:src/gql/"]
+    assert r.findings[0].fix == ["npx graphql-codegen"]
+
+
+def test_custom_generated_rule_from_toml(tmp_path):
+    mk(tmp_path, ".whystale.toml", '[[generated]]\nname = "sdk"\nsources = ["api/spec.yaml"]\noutputs = ["sdk/**"]\ncommand = "make sdk"\n', ago(9000))
+    mk(tmp_path, "api/spec.yaml", "x", ago(100))
+    mk(tmp_path, "sdk/a.ts", "x", ago(1000))
+    mk(tmp_path, "sdk/b.ts", "x", ago(900))
+    cfg = load_config(str(tmp_path))
+    f = scan(tmp_path, cfg, only={"generated"}).findings[0]
+    assert (f.kind, f.fix) == ("generated", ["make sdk"])
+    os.utime(tmp_path / "sdk" / "b.ts", (ago(10), ago(10)))  # any fresh output clears it
+    assert scan(tmp_path, cfg, only={"generated"}).findings == []
+    assert scan(tmp_path, Config(), only={"generated"}).findings == []  # without the config: no rule
+
+
+def test_prisma_client_found_through_pnpm_style_symlink(tmp_path):
+    store = tmp_path / "node_modules/.pnpm/@prisma+client@5/node_modules"
+    mk(store, "@prisma/client/index.js", "//", ago(9000))
+    mk(store, ".prisma/client/index.js", "//", ago(1000))
+    (tmp_path / "node_modules/@prisma").mkdir(parents=True)
+    os.symlink(store / "@prisma/client", tmp_path / "node_modules/@prisma/client")
+    mk(tmp_path, "prisma/schema.prisma", SCHEMA, ago(100))
+    f = scan(tmp_path, only={"generated"}).findings[0]
+    assert f.kind == "generated" and ".pnpm" in f.details["output"]
