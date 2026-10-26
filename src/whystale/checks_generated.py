@@ -160,7 +160,6 @@ def check_protobuf(project: Project, cfg: Config) -> Tuple[List[Finding], List[d
             (stale_c if src_m > m + cfg.fs_grace_seconds else fresh_c).append((c, m))
         if not stale_c:
             continue
-        d = _dir_of(p)
         if os.path.isfile(project.abs("buf.gen.yaml")):
             cmd = "buf generate"
         else:
@@ -191,7 +190,7 @@ def check_protobuf(project: Project, cfg: Config) -> Tuple[List[Finding], List[d
 # ---------------------------------------------------------------------------
 def _marker_in_dir(path: str, markers: Tuple[str, ...]) -> bool:
     seen = 0
-    for dp, dns, fns in os.walk(path):
+    for dp, _dns, fns in os.walk(path):
         for fn in fns:
             seen += 1
             if seen > 200:
@@ -335,7 +334,7 @@ def check_rules(project: Project, cfg: Config, now: float) -> Tuple[List[Finding
         for o in outs:
             a = project.abs(o)
             if os.path.isdir(a):
-                for dp, dns, fns in os.walk(a):
+                for dp, _dns, fns in os.walk(a):
                     for fn in fns:
                         out_files.append(project.rel(os.path.join(dp, fn)))
             elif os.path.isfile(a):
