@@ -1,7 +1,7 @@
 import pytest
 
 from whystale import tomlmini
-from whystale.config import Config, ConfigError, load_config, parse_config, load_toml_text
+from whystale.config import ConfigError, load_config, parse_config
 from helpers import mk
 
 SAMPLE = '''

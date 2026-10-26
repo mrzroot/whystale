@@ -8,9 +8,8 @@ says why. Entries come from tool documentation; verify against your versions.
 from __future__ import annotations
 
 import fnmatch
-import os
 import re
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional
 
 from .model import MAYBE, STALE
 

@@ -10,7 +10,7 @@ from typing import List, Optional
 
 from . import __version__
 from .config import ConfigError, load_config
-from .render import (EXIT_STALE, exit_code, make_style, render_json, render_markdown, render_text)
+from .render import (exit_code, make_style, render_json, render_markdown, render_text)
 from .scan import run_scan
 
 EPILOG = """\

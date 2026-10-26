@@ -5,7 +5,6 @@ import sys
 import threading
 import time
 
-import pytest
 
 from whystale import __version__
 from whystale.cli import main

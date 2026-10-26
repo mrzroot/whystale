@@ -13,7 +13,7 @@ import urllib.request
 from typing import Optional, Tuple
 
 from .config import Config
-from .render import exit_code, make_style, render_json, render_markdown, render_text
+from .render import render_json, render_markdown, render_text
 from .scan import run_scan
 
 SERVER_PY = '''\

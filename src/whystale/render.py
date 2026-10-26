@@ -8,8 +8,8 @@ import time
 from typing import List, Optional
 
 from . import __version__
-from .fsutil import fmt_delta, fmt_time
-from .model import KIND_LABEL, MAYBE, STALE, Finding, Report
+from .fsutil import fmt_delta
+from .model import KIND_LABEL, Report
 
 EXIT_STALE = 3
 

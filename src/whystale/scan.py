@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import time
-from typing import List, Optional
+from typing import Optional
 
 from .checks_artifacts import check_artifacts
 from .checks_deps import check_deps
@@ -11,7 +11,7 @@ from .checks_generated import check_generated
 from .checks_process import check_processes
 from .config import Config
 from .fsutil import Project
-from .model import ARTIFACT, DEPS, GENERATED, PROCESS, STALE, Finding, Report
+from .model import ARTIFACT, DEPS, GENERATED, PROCESS, STALE, Report
 
 KIND_ORDER = {PROCESS: 0, DEPS: 1, ARTIFACT: 2, GENERATED: 3}
 
