@@ -5,7 +5,7 @@ that started before `.env` or the lockfile changed, a build older than its sourc
 dependencies older than the lockfile, generated code older than its schema. It tells you *why* it
 thinks so and prints the **exact command** to refresh it.
 
-[![CI](https://github.com/mrzroot/whystale/actions/workflows/ci.yml/badge.svg)](https://github.com/mrzroot/whystale/actions/workflows/ci.yml)
+
 ![python](https://img.shields.io/badge/python-3.9%E2%80%933.13-blue)
 ![deps](https://img.shields.io/badge/dependencies-none-brightgreen)
 ![license](https://img.shields.io/badge/license-MIT-lightgrey)
