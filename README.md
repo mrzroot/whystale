@@ -1,3 +1,15 @@
+<p align="center"><img src=".github/assets/banner.svg" alt="whystale: Changed the code but it still acts old? Find what is stale." width="100%"></p>
+
+<p align="center">
+  <a href="https://github.com/mrzroot/whystale/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/mrzroot/whystale?style=flat-square"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/mrzroot/whystale?style=flat-square"></a>
+  <img alt="Python 3.9+" src="https://img.shields.io/badge/python-3.9%2B-3776ab?style=flat-square">
+  <img alt="No dependencies" src="https://img.shields.io/badge/dependencies-none-brightgreen?style=flat-square">
+  <a href="https://github.com/mrzroot/whystale/commits"><img alt="Last commit" src="https://img.shields.io/github/last-commit/mrzroot/whystale?style=flat-square"></a>
+</p>
+
+<p align="center"><a href="https://mrzroot.github.io/whystale/">Website</a> · <a href="README.fa.md">فارسی</a> · <a href="CHANGELOG.md">Changelog</a> · <a href="CONTRIBUTING.md">Contributing</a></p>
+
 # whystale
 
 **Changed the code but it still behaves the old way?** `whystale` finds the stale thing: a dev server
