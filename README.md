@@ -71,6 +71,19 @@ uvx --from git+https://github.com/mrzroot/whystale whystale --demo
 pip install -e .
 ```
 
+
+## The dependency or generation CI check
+
+Compare only dependency and generated-code state. Exit 3 means confirmed stale state; exit 2 means usage or configuration error, not a stale file.
+
+```sh
+whystale --only deps,generated
+```
+
+If timestamps are unreliable (for example, after restoring a cache), inspect the evidence before reinstalling anything. The tool prints suggestions; it does not run them.
+
+See the [bilingual scenario on the project page](docs/index.html#first-check).
+
 ## Usage
 
 ```sh
