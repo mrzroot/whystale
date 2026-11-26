@@ -19,7 +19,7 @@
 <link rel="preload" href="fonts/vazirmatn-400-800-arabic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="site.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareSourceCode", "name": "whystale", "description": "Changed the code but it still behaves the old way? whystale finds what is stale: servers started before .env or the lockfile changed, builds older than source, deps older than the lockfile, generated code older than its schema, and prints the fix.", "codeRepository": "https://github.com/mrzroot/whystale", "url": "https://mrzroot.github.io/whystale/", "programmingLanguage": "Python", "license": "https://opensource.org/licenses/MIT", "version": "0.1.0", "author": {"@type": "Person", "name": "Mohammadreza Zare", "url": "https://github.com/mrzroot"}}</script>
-<link rel="stylesheet" href="/assets/studio-mark.css"></head>
+<link rel="stylesheet" href="/assets/studio-mark.css"><link rel="stylesheet" href="/assets/portfolio/embed.css"><script defer src="/assets/portfolio/exhibit.js"></script></head>
 <body class="p-whystale">
 <a class="skip" href="#main"><span class="l-en">Skip to content</span><span class="l-fa" lang="fa">رفتن به محتوا</span></a>
 <header class="top"><div class="wrap">
@@ -44,11 +44,32 @@
   </div>
   <div><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>shop-web</span><b>whystale</b></div><pre class="hero-pre" id="hero-pre" aria-label="whystale scan: a dev server that started before .env changed"><code></code></pre></div></div>
 </div></section>
-<aside class="studio-project-entry" style="--entry-color:#ffca75">
-  <img src="/assets/thumbs/whystale.webp" alt="" width="160" height="100" loading="lazy" decoding="async">
-  <div><strong><span class="l-en" lang="en">Find the old artifact</span><span class="l-fa" lang="fa">خروجی قدیمی را پیدا کن</span></strong><small><span class="l-en" lang="en">Check the build artifact and running process</span><span class="l-fa" lang="fa">خروجی ساخت و فرایند را بررسی کن</span></small></div>
-  <a href="/playground/?project=whystale"><span class="l-en" lang="en">Try the case ↗</span><span class="l-fa" lang="fa">سناریو را امتحان کن ↗</span></a>
-</aside>
+<div class="atlas-embedded" data-motif="film" style="--exhibit-hue:33"><section class="exhibit-studio" id="portfolio-example" data-project="whystale" data-motif="film" data-state="0" aria-labelledby="portfolio-example-title">
+    <div class="exhibit-studio-head"><div><p class="exhibit-kicker"><span class="pf-en" lang="en">Illustrative sample</span><span class="pf-fa" lang="fa">دادهٔ نمونه</span></p><h2 id="portfolio-example-title"><span class="pf-en" lang="en">Scrub the sequence</span><span class="pf-fa" lang="fa">توالی را جلو و عقب ببر</span></h2></div>
+       <a href="/projects/guide/whystale/"><span class="pf-en" lang="en">Interactive introduction</span><span class="pf-fa" lang="fa">معرفی تعاملی</span> <i class="exhibit-arrow" aria-hidden="true"></i></a></div>
+    <div class="exhibit-lab">
+      <div class="stage-picture" aria-hidden="true">
+        <div class="stage-sign"><i></i><i></i><i></i><strong dir="ltr">whystale</strong></div>
+
+        <div class="stage-track" dir="ltr"></div>
+        <div class="stage-evidence" dir="ltr"><span dir="auto">13:40 bundle</span><span dir="auto">14:12 source</span></div>
+      </div>
+      <div class="stage-work">
+        <p><span class="pf-en" lang="en">You saved the source at 14:12. Your running service is loading a bundle timestamped 13:40. Which layer do you investigate?</span><span class="pf-fa" lang="fa">کد منبع ساعت ۱۴:۱۲ ذخیره شده و سرویس هنوز بستهٔ ساعت ۱۳:۴۰ را می‌خواند. سراغ چه لایه‌ای می‌روی؟</span></p>
+        <div class="stage-actions" role="group" aria-label="Example controls / کنترل‌های نمونه">
+          <button type="button" data-stage="1" aria-pressed="false"><span class="pf-en" lang="en">Check the build artifact and running process</span><span class="pf-fa" lang="fa">خروجی ساخت و فرایند را بررسی کن</span><i class="exhibit-arrow" aria-hidden="true"></i></button><button type="button" data-stage="2" aria-pressed="false"><span class="pf-en" lang="en">Edit the source again</span><span class="pf-fa" lang="fa">دوباره کد منبع را ویرایش کن</span><i class="exhibit-arrow" aria-hidden="true"></i></button>
+        </div>
+        <output class="stage-result" aria-live="polite"><span class="pf-en" lang="en">Try a response to see its effect.</span><span class="pf-fa" lang="fa">یک کار را انتخاب کن و اثرش را ببین.</span></output>
+        <div class="stage-foot">
+          <button type="button" data-stage="0" aria-pressed="true"><span class="pf-en" lang="en">Reset example</span><span class="pf-fa" lang="fa">بازنشانی نمونه</span></button>
+          <input type="range" min="0" max="2" value="0" step="1" aria-label="Example position / مرحلهٔ نمونه">
+        </div>
+      </div>
+    </div>
+   </section>
+    <p class="exhibit-takeaway"><span class="pf-en" lang="en">Record the source time, build output time, and path the running service actually loads.</span><span class="pf-fa" lang="fa">زمان کد منبع، زمان خروجی ساخت و مسیری را که سرویس فعال واقعاً بارگذاری می‌کند ثبت کن.</span></p>
+    <script type="application/json" data-embed-project>{"entries":[{"id":"whystale","group":"systems","motif":"film","color":"#ffca75","title":["Find the old artifact","خروجی قدیمی را پیدا کن"],"brief":["You saved the source at 14:12. Your running service is loading a bundle timestamped 13:40. Which layer do you investigate?","کد منبع ساعت ۱۴:۱۲ ذخیره شده و سرویس هنوز بستهٔ ساعت ۱۳:۴۰ را می‌خواند. سراغ چه لایه‌ای می‌روی؟"],"actions":[["Check the build artifact and running process","خروجی ساخت و فرایند را بررسی کن"],["Edit the source again","دوباره کد منبع را ویرایش کن"]],"outcomes":[["The source is newer than the bundle. Rebuild and verify which bundle the process loads.","منبع جدیدتر از بسته است. بسته را دوباره بساز و مسیر فایل بارگذاری‌شده را بررسی کن."],["A second edit widens the age gap. The active process still uses the old bundle.","فاصلهٔ زمانی بیشتر می‌شود و فرایند فعال همچنان بستهٔ قدیمی را می‌خواند."]],"evidence":[["13:40 bundle","14:12 source"],["14:12 source","14:14 rebuilt","14:15 loaded"],["13:40 bundle","14:16 source"]],"name":"whystale","kicker":["Stale-state detection","تشخیص وضعیت کهنه"],"intro":["Find a process or artifact that predates a configuration, source or lockfile change, before restarting everything.","پیش از اینکه همه‌چیز را دوباره راه بیندازید، ببینید کدام فرایند، بیلد یا نصب از تغییر تنظیمات، کد یا فایل قفل قدیمی‌تر است."],"hint":["Use a scratch app, start it and edit its configuration. Read the time and path evidence before deciding what to restart.","یک برنامهٔ آزمایشی اجرا کنید و تنظیماتش را تغییر دهید. قبل از راه‌اندازی دوباره، زمان و مسیرهای گزارش را بخوانید."],"site":"/whystale/","source":"https://github.com/mrzroot/whystale","layout":"contact","hue":33,"image":"/assets/thumbs/whystale.webp"}],"labels":{"map":["Project Atlas","اطلس پروژه‌ها"],"mapIntro":["Four ways to explore the projects. Choose a project to see what it does and open its interactive introduction.","چهار مسیر برای گشتن میان پروژه‌ها. یکی را انتخاب کن تا ببینی چه کار می‌کند و معرفی تعاملی‌اش را باز کنی."],"agents":["AI tooling","ابزارهای هوش مصنوعی"],"language":["Language and data","زبان و داده"],"systems":["Systems","سامانه‌ها"],"showcase":["Design and demos","طراحی و دمو"],"projects":["All projects","همهٔ پروژه‌ها"],"open":["Interactive introduction","معرفی تعاملی"],"test":["Try the example","نمونه را امتحان کن"],"story":["The situation","مسئله"],"reference":["Inspect the project","بررسی پروژه"],"source":["View source on GitHub","کد منبع در گیت‌هاب"],"demo":["Open project website","باز کردن سایت پروژه"],"guide":["Suggested first step","قدم اول پیشنهادی"],"sample":["Illustrative sample","دادهٔ نمونه"],"result":["What happens","نتیجه"],"choose":["Try a response to see its effect.","یک کار را انتخاب کن و اثرش را ببین."],"still":["Initial state","حالت اولیه"],"reset":["Reset example","بازنشانی نمونه"],"more":["Explore another project","یک پروژهٔ دیگر ببین"]}}</script>
+  </div>
 
 <section id="problem" aria-labelledby="problem-h"><div class="wrap">
   <p class="label"><span class="l-en">The problem</span><span class="l-fa" lang="fa">مسئله</span></p><h2 id="problem-h"><span class="l-en">Changed the code but it still behaves the old way? whystale finds what is older than what it was built from.</span><span class="l-fa" lang="fa">کد را عوض کردید ولی هنوز مثل قبل رفتار می‌کند؟ whystale پیدا می‌کند چه چیزی از منبعش قدیمی‌تر است.</span></h2>
